@@ -311,3 +311,21 @@ func NewPDFGenerator() (*PDFGenerator, error) {
 	err := pdfg.findPath()
 	return pdfg, err
 }
+func NewPDFGeneratorWithXVFB(xvfbPath string) (*PDFGenerator, error) {
+	pdfg := &PDFGenerator{
+		globalOptions:  newGlobalOptions(),
+		outlineOptions: newOutlineOptions(),
+		Cover: cover{
+			pageOptions: newPageOptions(),
+		},
+		TOC: toc{
+			allTocOptions: allTocOptions{
+				tocOptions:  newTocOptions(),
+				pageOptions: newPageOptions(),
+			},
+		},
+	}
+	err := pdfg.findPath()
+	pdfg.binPath =fmt.Sprintf("%s -- %s",xvfbPath,pdfg.binPath)
+	return pdfg, err
+}
