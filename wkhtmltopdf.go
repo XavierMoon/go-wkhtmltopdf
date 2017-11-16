@@ -163,6 +163,10 @@ type PDFGenerator struct {
 //Args returns the commandline arguments as a string slice
 func (pdfg *PDFGenerator) Args() []string {
 	args := []string{}
+	if(xvfb != ""){
+		args = append(args,pdfg.binPath)
+	}
+
 	args = append(args, pdfg.globalOptions.Args()...)
 	args = append(args, pdfg.outlineOptions.Args()...)
 	if pdfg.Cover.Input != "" {
@@ -267,10 +271,14 @@ func (pdfg *PDFGenerator) Create() error {
 }
 
 func (pdfg *PDFGenerator) run() error {
-
+	var cmd *exec.Cmd
 	errbuf := &bytes.Buffer{}
+	if(xvfb ==""){
+		cmd = exec.Command(pdfg.binPath, pdfg.Args()...)
+	}else{
+		cmd = exec.Command(xvfb, pdfg.Args()...)
+	}
 
-	cmd := exec.Command(xvfb,pdfg.binPath, pdfg.Args()...)
 
 	cmd.Stdout = &pdfg.outbuf
 	cmd.Stderr = errbuf
