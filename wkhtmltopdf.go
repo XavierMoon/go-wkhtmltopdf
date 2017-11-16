@@ -33,6 +33,7 @@ func (ss *stringStore) Set(s string) {
 }
 
 var binPath stringStore
+var xvfb  string
 
 // SetPath sets the path to wkhtmltopdf
 func SetPath(path string) {
@@ -269,7 +270,7 @@ func (pdfg *PDFGenerator) run() error {
 
 	errbuf := &bytes.Buffer{}
 
-	cmd := exec.Command(pdfg.binPath, pdfg.Args()...)
+	cmd := exec.Command(xvfb,pdfg.binPath, pdfg.Args()...)
 
 	cmd.Stdout = &pdfg.outbuf
 	cmd.Stderr = errbuf
@@ -326,6 +327,6 @@ func NewPDFGeneratorWithXVFB(xvfbPath string) (*PDFGenerator, error) {
 		},
 	}
 	err := pdfg.findPath()
-	pdfg.binPath =fmt.Sprintf("%s -- %s",xvfbPath,pdfg.binPath)
+	xvfb = xvfbPath
 	return pdfg, err
 }
